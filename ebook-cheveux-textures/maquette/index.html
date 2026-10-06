@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette — E-book Cheveux texturés</title>
+<style>
+  :root{
+    --karite:#E7D7BE; --or:#D9A13B; --indigo:#2B3E63; --terracotta:#B4573A;
+    --gombo:#5B6B3A; --encre:#1C1B19; --sable:#FBF7F0; --gris:#6b6b66;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:#2f2b26; color:var(--encre);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:11pt; line-height:1.45;
+  }
+  .barre{position:sticky;top:0;z-index:5;background:#1c1b19;color:#fff;padding:10px 16px;display:flex;gap:14px;flex-wrap:wrap;align-items:center;font-size:9.5pt}
+  .barre b{color:var(--or)}
+  .pastille{display:inline-flex;align-items:center;gap:6px;background:#332f2a;border:1px solid #4a443c;border-radius:999px;padding:3px 10px}
+  .sheet{
+    width:210mm;min-height:297mm;margin:16px auto;background:var(--sable);
+    padding:14mm 13mm 12mm;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.45);
+    display:flex;flex-direction:column;
+  }
+  .sheet::after{content:attr(data-pied);position:absolute;bottom:5mm;left:13mm;right:13mm;
+    font-size:7.5pt;color:var(--gris);border-top:1px solid #dfd6c6;padding-top:2mm;display:flex;justify-content:space-between}
+  .pagenum{font-weight:700;color:var(--indigo)}
+
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:30pt;line-height:1.05;margin:0 0 6px}
+  h2{font-family:Georgia,serif;font-size:17pt;margin:0 0 2mm;color:var(--indigo)}
+  h3{font-size:11.5pt;margin:0 0 1mm;text-transform:uppercase;letter-spacing:.06em;color:var(--terracotta)}
+  p{margin:0 0 2.5mm}
+
+  .filet{display:flex;align-items:center;gap:8px;font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;color:var(--or);font-weight:700;margin-bottom:3mm}
+  .filet::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--or),transparent)}
+  .badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:8.5pt;font-weight:700;border:1.5px solid}
+  .b-preuve{color:#1f5c2e;border-color:#1f5c2e;background:#e8f4ea}
+  .b-prom{color:#8a5a00;border-color:#8a5a00;background:#fdf3e0}
+  .b-trad{color:#5b6b3a;border-color:#5b6b3a;background:#eef2e4}
+  .b-info{color:var(--indigo);border-color:var(--indigo);background:#e9eef6}
+
+  /* ---- couverture ---- */
+  .cover{background:linear-gradient(160deg,#2B3E63 0%,#1b2740 55%,#161d2c 100%);color:#F6EFE4;justify-content:space-between;overflow:hidden}
+  .cover::before{content:"";position:absolute;inset:0;background:
+    repeating-linear-gradient(115deg,rgba(217,161,59,.10) 0 2px,transparent 2px 16px);pointer-events:none}
+  .cover .top{position:relative}
+  .cover .eyebrow{letter-spacing:.28em;text-transform:uppercase;font-size:9pt;color:var(--or)}
+  .cover h1{font-size:44pt;color:#fff;margin-top:4mm}
+  .cover .sous{font-size:13pt;color:var(--karite);max-width:130mm}
+  .cover .promesses{display:grid;grid-template-columns:1fr 1fr;gap:4mm;margin-top:8mm;position:relative}
+  .cover .promesses div{background:rgba(255,255,255,.07);border:1px solid rgba(217,161,59,.4);border-radius:12px;padding:4mm;font-size:9.5pt}
+  .cover .promesses strong{display:block;color:var(--or);font-size:10pt}
+  .cover .bas{position:relative;display:flex;justify-content:space-between;align-items:flex-end;font-size:9pt;color:#cbbfae}
+
+  /* ---- cartes ---- */
+  .deux{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+  .colleft{display:flex;flex-direction:column;gap:4mm}
+  .encadre{background:#fff;border:1px solid #e3d9c8;border-radius:var(--radius);padding:4mm}
+  .encadre.or{border-left:5px solid var(--or)}
+  .encadre.terra{border-left:5px solid var(--terracotta)}
+  .encadre.vert{border-left:5px solid var(--gombo)}
+  .encadre.indigo{border-left:5px solid var(--indigo)}
+  .encadre h3{margin-bottom:1.5mm}
+  .encadre ul{margin:0;padding-left:4.5mm}
+  .encadre li{margin-bottom:1mm}
+  .mini{font-size:9pt;color:var(--gris)}
+  .illu{background:#fff;border:1px solid #e3d9c8;border-radius:var(--radius);padding:3mm;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .illu svg{width:100%;height:auto;max-height:62mm}
+
+  table{width:100%;border-collapse:collapse;font-size:9.5pt}
+  th,td{border:1px solid #e0d6c5;padding:2mm 2.5mm;text-align:left;vertical-align:top}
+  th{background:var(--karite);font-size:8.5pt;text-transform:uppercase;letter-spacing:.04em;color:#4a3a22}
+  tr:nth-child(even) td{background:#fff}
+
+  .bande{display:flex;gap:3mm;flex-wrap:wrap;margin:2mm 0 3mm}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px dashed #cdbfa8;border-radius:10px;padding:2mm 3mm;font-size:9pt}
+  .chip b{color:var(--terracotta)}
+
+  .freqband{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin-top:3mm}
+  .freqband div{background:var(--indigo);color:#fff;border-radius:10px;padding:2.5mm;text-align:center;font-size:8.5pt}
+  .freqband strong{display:block;font-size:11pt;color:var(--or);font-family:Georgia,serif}
+
+  .stars{color:var(--or);letter-spacing:2px;font-size:13pt}
+  .stars .off{color:#cfc6b6}
+
+  .grille-champs{display:grid;grid-template-columns:1fr 1fr;gap:2.5mm}
+  .champ{border:1px solid #ded3c0;background:#fff;border-radius:10px;padding:2.5mm 3mm}
+  .champ .etiq{font-size:8pt;text-transform:uppercase;letter-spacing:.06em;color:var(--terracotta);font-weight:700}
+  .champ .val{font-size:9.5pt}
+
+  .lignes .l{display:flex;gap:3mm;align-items:flex-end;margin-bottom:4mm}
+  .lignes .l span{flex:0 0 auto;font-size:9.5pt}
+  .lignes .l i{flex:1;border-bottom:1.2px dotted #b9ac95;height:14px}
+  .cases{display:flex;gap:2mm;flex-wrap:wrap}
+  .cases label{border:1px solid #ded3c0;background:#fff;border-radius:8px;padding:2mm 3mm;font-size:9.5pt;display:inline-flex;gap:2mm;align-items:center}
+  .ptitcarre{width:11px;height:11px;border:1.5px solid var(--indigo);border-radius:3px;display:inline-block}
+
+  .phylo{display:flex;gap:2mm;margin-top:3mm}
+  .etape{flex:1;background:#fff;border:1px solid #e3d9c8;border-top:4px solid var(--or);border-radius:10px;padding:2.5mm;font-size:8.5pt}
+  .etape b{display:block;color:var(--indigo);font-size:9pt}
+
+  .retiens{margin-top:auto;background:var(--indigo);color:#F6EFE4;border-radius:12px;padding:4mm;font-size:10.5pt}
+  .retiens b{color:var(--or)}
+
+  @media print{
+    body{background:#fff}
+    .barre{display:none}
+    .sheet{margin:0;box-shadow:none;page-break-after:always;width:auto;min-height:auto;padding:12mm}
+  }
+  @page{size:A4;margin:0}
+</style>
+</head>
+<body>
+
+<div class="barre">
+  <span><b>Maquette</b> — E-book « Cheveux texturés en Afrique »</span>
+  <span class="pastille">5 planches : couverture · diagnostic · fiche ingrédient · fiche astuce · fiche tresses</span>
+  <span class="pastille">Pour imprimer : Ctrl/Cmd + P → A4</span>
+</div>
+
+<!-- ============ 1. COUVERTURE ============ -->
+<section class="sheet cover">
+  <div class="top">
+    <div class="eyebrow">Guide pratique · Cheveux texturés · Afrique</div>
+    <h1>Ma couronne,<br>mes règles</h1>
+    <p class="sous">Comprendre ses cheveux texturés et en prendre soin avec ce qu'on a dans sa cuisine.</p>
+    <div class="promesses">
+      <div><strong>Pourquoi ?</strong> Ce que chaque ingrédient fait vraiment à la fibre, expliqué simplement.</div>
+      <div><strong>Combien ?</strong> Cuillères, verres, noix : des quantités exactes, jamais « un peu d'huile ».</div>
+      <div><strong>À quelle fréquence ?</strong> Chaque geste a son rythme : semaine, mois, saison.</div>
+      <div><strong>Pour quels cheveux ?</strong> Types 2-3-4, porosité basse, moyenne ou haute.</div>
+    </div>
+  </div>
+  <svg viewBox="0 0 600 150" aria-label="Motif de tresses stylisé" style="position:relative;margin-top:8mm">
+    <g fill="none" stroke="#D9A13B" stroke-width="2.4" opacity=".85">
+      <path d="M20 130 C120 20, 180 20, 280 130"/>
+      <path d="M70 130 C170 20, 230 20, 330 130"/>
+      <path d="M240 130 C340 20, 400 20, 500 130"/>
+      <path d="M290 130 C390 20, 450 20, 550 130"/>
+      <path d="M140 130 C240 20, 300 20, 400 130"/>
+      <path d="M190 130 C290 20, 350 20, 450 130"/>
+    </g>
+  </svg>
+  <div class="bas">
+    <div>25 ingrédients de cuisine · 40 gestes · 12 fiches de tresses<br>Un Kit Anti-Paresse : routines de 2 minutes, défi 7 jours, plan 30 jours</div>
+    <div style="text-align:right">Pr [Nom de l'autrice]<br>Édition 2026</div>
+  </div>
+</section>
+
+<!-- ============ 2. FICHE DIAGNOSTIC ============ -->
+<section class="sheet" data-pied="Partie 2 · Connaître ses cheveux">
+  <div class="filet">Chapitre 9 · À remplir · page 41</div>
+  <h2>Ma fiche de profil capillaire</h2>
+  <p class="mini">À remplir une fois, puis à revoir tous les 3 mois. C'est cette fiche qui détermine les quantités et les fréquences de tout le reste du livre.</p>
+
+  <div class="deux" style="margin-top:3mm">
+    <div class="colleft">
+      <div class="encadre or">
+        <h3>1 · Mon type</h3>
+        <div class="cases">
+          <label><span class="ptitcarre"></span> 2 (ondulé)</label>
+          <label><span class="ptitcarre"></span> 3A</label>
+          <label><span class="ptitcarre"></span> 3B</label>
+          <label><span class="ptitcarre"></span> 3C</label>
+          <label><span class="ptitcarre"></span> 4A</label>
+          <label><span class="ptitcarre"></span> 4B</label>
+          <label><span class="ptitcarre"></span> 4C</label>
+          <label><span class="ptitcarre"></span> Défrisé / en transition</label>
+        </div>
+        <p class="mini" style="margin-top:2mm">Test de la boucle : mèche mouillée + 2 gouttes de gel de lin, laisser sécher 20 min.</p>
+      </div>
+
+      <div class="encadre indigo">
+        <h3>2 · Mon fil et ma densité</h3>
+        <p style="margin-bottom:1mm"><b>Épaisseur du fil :</b> fin · moyen · épais</p>
+        <p style="margin-bottom:1mm"><b>Densité :</b> je vois mon crâne (faible) · un peu (moyenne) · pas du tout (dense)</p>
+        <p class="mini" style="margin:0">Pourquoi c'est important : un cheveu fin supporte moins de beurre et de rajouts lourds.</p>
+      </div>
+
+      <div class="encadre vert">
+        <h3>3 · Ma porosité (3 tests croisés)</h3>
+        <table>
+          <tr><th>Test</th><th>Résultat</th></tr>
+          <tr><td>Vitesse de mouillage sous la douche</td><td>immédiat / lent / très lent</td></tr>
+          <tr><td>Vitesse de séchage à l'air</td><td>&lt; 1 h / 1-3 h / &gt; 3 h</td></tr>
+          <tr><td>Leave-in : il boit / il reste gras</td><td>boit / reste en surface</td></tr>
+        </table>
+        <p class="mini" style="margin:2mm 0 0">Le test du verre d'eau n'est pas fiable : on ne l'utilise pas dans ce livre.</p>
+      </div>
+
+      <div class="encadre terra">
+        <h3>4 · Mon élasticité</h3>
+        <p style="margin:0">Une mèche mouillée s'étire sans casser sur environ 1/4 de sa longueur puis <b>revient</b> : équilibre OK.<br>
+        Elle casse net : <b>trop de protéines</b> ou fibre abîmée. Elle s'étire comme un chewing-gum : <b>trop d'hydratation</b>, ajouter un soin protéiné.</p>
+      </div>
+    </div>
+
+    <div class="colleft">
+      <div class="encadre">
+        <h3>5 · Mon crâne aujourd'hui</h3>
+        <div class="cases">
+          <label><span class="ptitcarre"></span> sec</label>
+          <label><span class="ptitcarre"></span> gras</label>
+          <label><span class="ptitcarre"></span> pellicules</label>
+          <label><span class="ptitcarre"></span> démangeaisons</label>
+          <label><span class="ptitcarre"></span> sensible / douloureux</label>
+          <label><span class="ptitcarre"></span> plaques</label>
+        </div>
+      </div>
+
+      <div class="encadre or">
+        <h3>6 · Mes repères de départ</h3>
+        <div class="lignes">
+          <div class="l"><span>Longueur d'une mèche repère (traction douce) :</span><i></i></div>
+          <div class="l"><span>Tour de tête / volume de la queue :</span><i></i></div>
+          <div class="l"><span>Date de la photo de départ :</span><i></i></div>
+          <div class="l"><span>Dernière coupe / dernière pose :</span><i></i></div>
+        </div>
+        <p class="mini" style="margin:0">4 photos à faire maintenant : face, profil, derrière, crâne baissé, lumière du jour, cheveux propres et secs.</p>
+      </div>
+
+      <div class="encadre indigo">
+        <h3>7 · Mon profil de routine</h3>
+        <p style="margin-bottom:2mm">Cochez votre profil, puis suivez la page indiquée : c'est votre routine de base.</p>
+        <table>
+          <tr><th>Profil</th><th>Ma routine</th></tr>
+          <tr><td>4C épais, porosité haute</td><td>page 58</td></tr>
+          <tr><td>4C fin ou 4B</td><td>page 60</td></tr>
+          <tr><td>3C / 4A porosité moyenne</td><td>page 62</td></tr>
+          <tr><td>Cheveux défrisés ou en transition</td><td>page 64</td></tr>
+        </table>
+      </div>
+
+      <div class="retiens"><b>À retenir :</b> ma routine ne dépend pas de la mode, mais de trois informations : mon fil, ma porosité, l'état de mon crâne.</div>
+    </div>
+  </div>
+  <div class="pagenum" style="position:absolute;bottom:5mm;right:13mm">41</div>
+</section>
+
+<!-- ============ 3. FICHE INGRÉDIENT ============ -->
+<section class="sheet" data-pied="Partie 2 · La pharmacie de la cuisine · Fiche ingrédient n° 14">
+  <div class="filet">Famille : gels &amp; mucilages · fiche n° 14/25</div>
+
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4mm">
+    <div>
+      <h2>Le gombo</h2>
+      <p class="mini" style="margin:0"><i>Abelmoschus esculentus</i> · aussi appelé okra · nom local : à compléter</p>
+    </div>
+    <div style="text-align:right;display:flex;flex-direction:column;gap:2mm;align-items:flex-end">
+      <span class="badge b-trad">🌿 Tradition / usage courant</span>
+      <span class="badge b-info">Coût : ≈ 25 FCFA l'utilisation</span>
+      <span class="badge b-info">⏱ Pose : 15-20 min</span>
+    </div>
+  </div>
+
+  <div class="deux" style="margin-top:4mm">
+    <div class="colleft">
+      <div class="illu">
+        <svg viewBox="0 0 300 170" aria-label="Gombos et bol de mucilage">
+          <rect x="0" y="0" width="300" height="170" fill="#FBF7F0"/>
+          <g>
+            <path d="M40 120 C38 70, 55 30, 75 22 C88 60, 82 105, 62 128 Z" fill="#5B6B3A"/>
+            <path d="M96 128 C92 80, 108 42, 128 34 C144 74, 136 116, 116 136 Z" fill="#6c7d47"/>
+            <path d="M150 124 C148 84, 162 52, 180 44 C192 82, 186 116, 168 132 Z" fill="#5B6B3A"/>
+            <g fill="#E7D7BE">
+              <circle cx="62" cy="60" r="3"/><circle cx="70" cy="86" r="3"/><circle cx="116" cy="70" r="3"/>
+              <circle cx="124" cy="98" r="3"/><circle cx="170" cy="76" r="3"/><circle cx="176" cy="102" r="3"/>
+            </g>
+          </g>
+          <path d="M200 120 h80 a8 8 0 0 1 8 8 v14 a8 8 0 0 1 -8 8 h-80 a8 8 0 0 1 -8 -8 v-14 a8 8 0 0 1 8 -8 z" fill="#D9A13B" opacity=".25"/>
+          <path d="M196 126 q44 -14 88 0 q-8 20 -44 20 q-36 0 -44 -20 z" fill="#C9D6A8"/>
+          <text x="240" y="163" font-size="9" fill="#6b6b66" text-anchor="middle">mucilage (gel)</text>
+        </svg>
+      </div>
+
+      <div class="encadre vert">
+        <h3>Ce qu'il fait — et pourquoi</h3>
+        <p style="margin:0">Le gombo libère un <b>mucilage</b> : une substance glissante qui <b>gaine la tige du cheveu</b> et abaisse le frottement entre les mèches. Résultat : on démêle sans arracher, et le cheveu garde de l'eau plus longtemps. C'est, en pratique, l'ancêtre local de l'après-shampooing.</p>
+      </div>
+
+      <div class="encadre">
+        <h3>Recette de base (3 ingrédients)</h3>
+        <ul>
+          <li>5 à 6 gombos frais (coupés en rondelles)</li>
+          <li>1 verre d'eau (250 ml)</li>
+          <li>Facultatif : 1 c. à café de miel</li>
+        </ul>
+        <p class="mini" style="margin:2mm 0 0">Faire tremper une nuit, puis filtrer avec un linge propre. Le liquide doit être <b>glissant entre les doigts</b>, comme un blanc d'œuf.</p>
+      </div>
+
+      <div class="encadre terra">
+        <h3>Les 3 erreurs qui gâchent tout</h3>
+        <ul>
+          <li>Garder la préparation plus de 5 jours au frigo (ça fermente et ça sent aigre).</li>
+          <li>Filtrer au chinois large : les petits morceaux restent et cassent le cheveu.</li>
+          <li>En mettre « beaucoup » : au-delà de la dose, ça laisse un film collant.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="colleft">
+      <div class="grille-champs">
+        <div class="champ"><div class="etiq">Où le trouver</div><div class="val">Marché, jardin, saison des pluies surtout</div></div>
+        <div class="champ"><div class="etiq">Ce qu'il contient</div><div class="val">Mucilages, eau, potassium, vitamine C</div></div>
+        <div class="champ"><div class="etiq">Pour qui</div><div class="val">Tous types, roi du 4C · porosité basse, moyenne et haute</div></div>
+        <div class="champ"><div class="etiq">Quand l'utiliser</div><div class="val">En masque <b>ou</b> en sans-rinçage, au coiffage</div></div>
+      </div>
+
+      <div class="encadre or">
+        <h3>Quantités exactes selon mes cheveux</h3>
+        <table>
+          <tr><th>Cheveux</th><th>Quantité de gel</th><th>Réserve d'eau</th></tr>
+          <tr><td>Courts (&lt; 10 cm)</td><td>1 c. à soupe</td><td>1 verre</td></tr>
+          <tr><td>Mi-longs (10-25 cm)</td><td>2 c. à soupe</td><td>1 verre ½</td></tr>
+          <tr><td>Longs (&gt; 25 cm)</td><td>4 c. à soupe</td><td>2 verres</td></tr>
+        </table>
+        <p class="mini" style="margin:2mm 0 0">Pas de cuillère ? 1 c. à soupe ≈ le contenu d'un bouchon de bouteille d'huile, bombé.</p>
+      </div>
+
+      <div class="encadre indigo">
+        <h3>Comment faire en 4 gestes</h3>
+        <ol style="margin:0;padding-left:5mm;font-size:9.5pt">
+          <li>Mouiller les cheveux à l'eau tiède.</li>
+          <li>Séparer en 4 sections et appliquer le gel, mèche par mèche, des pointes vers les racines.</li>
+          <li>Démêler au peigne à dents larges <b>sur cheveux bien glissants</b>.</li>
+          <li>Laisser poser 15-20 min, rincer à l'eau tiède, ou laisser sécher pour coiffer.</li>
+        </ol>
+      </div>
+
+      <div class="encadre">
+        <h3>À combiner avec / à éviter</h3>
+        <p style="margin:0"><b>Bien :</b> miel (hydratation), huile de coco en après-rinçage (scellage), aloé vera (fraîcheur du crâne).<br>
+        <b>À éviter :</b> mélanger avec du vinaigre (le gel perd son glissant), et ne pas préparer avec du savon noir.</p>
+      </div>
+
+      <div class="freqband">
+        <div><strong>1×</strong>par semaine<br>(routine normale)</div>
+        <div><strong>2×</strong>par semaine<br>(cheveux très emmêlés, enfants)</div>
+        <div><strong>3-5 j</strong>de conservation<br>au frigo, pas plus</div>
+        <div><strong>0 F</strong>de gaspillage :<br>on filtre, on ne jette rien</div>
+      </div>
+
+      <div class="retiens"><b>À retenir :</b> le gombo ne nourrit pas le cheveu — il <b>fait glisser</b>. C'est ce qui sauve la longueur, parce que c'est au démêlage qu'on perd le plus de cheveux.</div>
+    </div>
+  </div>
+  <div class="pagenum" style="position:absolute;bottom:5mm;right:13mm">76</div>
+</section>
+
+<!-- ============ 4. FICHE ASTUCE ============ -->
+<section class="sheet" data-pied="Partie 3 · Astuces · Astuce phare n° 1">
+  <div class="filet">Astuce phare n° 1 · Tous types · anti-casse</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4mm">
+    <div>
+      <h2>Le bain d'huile chaud</h2>
+      <p class="mini" style="margin:0">Le soin qui rend la fibre souple avant de la manipuler.</p>
+    </div>
+    <span class="badge b-prom">🧪 Prometteur · usage très répandu</span>
+  </div>
+
+  <div class="deux" style="margin-top:4mm">
+    <div class="colleft">
+      <div class="encadre vert">
+        <h3>Ce que ça apporte, et pourquoi</h3>
+        <p style="margin:0">La chaleur douce <b>entrouvre les écailles de la cuticule</b> : l'huile entre au lieu de rester posée en surface. Le cheveu devient <b>plus souple</b>, se démêle avec moins de casse et se casse moins quand on le coiffe. Effet mesurable surtout chez les cheveux secs et sur les porosités basses, qui « refusent » l'eau.</p>
+      </div>
+
+      <div class="encadre or">
+        <h3>Ce qu'il me faut</h3>
+        <table>
+          <tr><th>Élément</th><th>Court</th><th>Mi-long</th><th>Long</th></tr>
+          <tr><td>Huile de coco (ou olive)</td><td>1 c. à café</td><td>1 c. à soupe</td><td>2 c. à soupe</td></tr>
+          <tr><td>Huile de ricin (facultatif, pour le crâne)</td><td colspan="3">½ c. à café, toujours mélangée à 2× plus d'huile fluide</td></tr>
+          <tr><td>Bain-marie (eau chaude, jamais bouillante)</td><td colspan="3">Pour tiédir l'huile : elle doit être <b>tiède sur le poignet</b></td></tr>
+          <tr><td>Bonnet plastique + serviette chaude</td><td colspan="3">Ou simplement un sachet propre et un linge chaud</td></tr>
+        </table>
+      </div>
+
+      <div class="encadre indigo">
+        <h3>En 4 étapes</h3>
+        <ol style="margin:0;padding-left:5mm;font-size:9.5pt">
+          <li>Tremper le flacon d'huile 3 min dans un bol d'eau chaude (jamais au feu).</li>
+          <li>Appliquer sur cheveux <b>propres et légèrement humides</b>, en 4 sections, pointes d'abord.</li>
+          <li>Coiffer le crâne d'un bonnet plastique + serviette chaude : <b>20 à 30 min</b>.</li>
+          <li>Laver au shampooing doux (ou co-wash), puis masque habituel.</li>
+        </ol>
+      </div>
+
+      <div class="encadre terra">
+        <h3>Jamais !</h3>
+        <ul style="margin:0">
+          <li>Huile brûlante : elle cuit le cheveu et brûle le crâne (brûlures graves).</li>
+          <li>Plus d'1×/semaine : à force, le cheveu « glisse » mais ne garde plus l'eau.</li>
+          <li>Sécher au ventilateur très chaud juste après : on annule le bénéfice.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="colleft">
+      <div class="illu">
+        <svg viewBox="0 0 300 180" aria-label="Les 4 étapes du bain d'huile">
+          <rect width="300" height="180" fill="#FBF7F0"/>
+          <g font-size="9" fill="#1C1B19" font-family="sans-serif">
+            <g>
+              <circle cx="42" cy="46" r="26" fill="#E7D7BE"/>
+              <path d="M30 56 q12 -18 24 0 z" fill="#D9A13B"/>
+              <text x="42" y="92" text-anchor="middle">1 · tiédir</text>
+            </g>
+            <g>
+              <circle cx="118" cy="46" r="26" fill="#E7D7BE"/>
+              <path d="M100 40 q18 14 36 0" stroke="#D9A13B" stroke-width="3" fill="none"/>
+              <path d="M104 52 q14 10 28 0" stroke="#D9A13B" stroke-width="3" fill="none"/>
+              <text x="118" y="92" text-anchor="middle">2 · appliquer</text>
+            </g>
+            <g>
+              <circle cx="194" cy="46" r="26" fill="#cfd8e6"/>
+              <path d="M180 34 q14 -12 28 0 v26 h-28 z" fill="#2B3E63" opacity=".5"/>
+              <text x="194" y="92" text-anchor="middle">3 · couvrir</text>
+            </g>
+            <g>
+              <circle cx="264" cy="46" r="26" fill="#E7D7BE"/>
+              <path d="M250 52 q14 -22 28 0" stroke="#5B6B3A" stroke-width="3" fill="none"/>
+              <text x="264" y="92" text-anchor="middle">4 · rincer</text>
+            </g>
+          </g>
+          <path d="M10 130 h280" stroke="#ded3c0"/>
+          <g font-size="10" fill="#2B3E63" font-family="sans-serif">
+            <text x="10" y="152">Durée totale : 35 à 45 min   ·   Tenue : 2 à 3 jours   ·   Coût : ≈ 200 à 400 FCFA</text>
+            <text x="10" y="170" fill="#6b6b66" font-size="9">Variante express 2 minutes : 3 gouttes d'huile tiédie dans les paumes, sur les pointes, avant le coiffage.</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="encadre">
+        <h3>Pour qui / pas pour qui</h3>
+        <p style="margin:0"><b>Idéal :</b> cheveux secs, porosité basse, cheveux qui cassent au démêlage, avant une pose de tresses.<br>
+        <b>À espacer :</b> crâne gras ou pellicules grasses (sur les longueurs seulement, pas sur le crâne).</p>
+      </div>
+
+      <div class="freqband">
+        <div><strong>1×/sem</strong>routine normale</div>
+        <div><strong>1×/15 j</strong>cheveux fins</div>
+        <div><strong>Avant</strong>toute pose de tresses</div>
+        <div><strong>Jamais</strong>si crâne irrité</div>
+      </div>
+
+      <div class="encadre indigo">
+        <h3>Les 3 signes que ça marche</h3>
+        <ul style="margin:0">
+          <li>Moins de cheveux dans le peigne pendant le démêlage.</li>
+          <li>Le cheveu reste souple 2-3 jours, au lieu de sécher tout de suite.</li>
+          <li>Les pointes ne « croquent » plus entre les doigts.</li>
+        </ul>
+      </div>
+
+      <div class="retiens"><b>À retenir :</b> on ne fait pas un bain d'huile pour « nourrir » le cheveu (c'est impossible) mais pour <b>le rendre souple avant de le manipuler</b>.</div>
+    </div>
+  </div>
+  <div class="pagenum" style="position:absolute;bottom:5mm;right:13mm">98</div>
+</section>
+
+<!-- ============ 5. FICHE TRESSES ============ -->
+<section class="sheet" data-pied="Partie 4 · Tresses protectrices · Fiche coiffure n° 5">
+  <div class="filet">Fiche coiffure protectrice n° 5 · score de risque</div>
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:4mm">
+    <div>
+      <h2>Les tresses « knotless » (sans nœud)</h2>
+      <p class="mini" style="margin:0">Le rajout est tissé progressivement : le poids se répartit au lieu de tirer d'un coup sur la racine.</p>
+    </div>
+    <div style="text-align:right">
+      <div class="stars">★★<span class="off">★★★</span></div>
+      <div class="mini">risque plus faible à la lisière</div>
+    </div>
+  </div>
+
+  <div class="deux" style="margin-top:4mm">
+    <div class="colleft">
+      <div class="encadre or">
+        <h3>La fiche d'identité</h3>
+        <table>
+          <tr><th>Point</th><th>Repère</th></tr>
+          <tr><td>Durée de portage raisonnable</td><td><b>4 à 6 semaines</b> maximum</td></tr>
+          <tr><td>Temps de pose</td><td>3 à 6 h (prévoir de la nourriture, de l'eau)</td></tr>
+          <tr><td>Tension</td><td>Faible si la pose est bien faite</td></tr>
+          <tr><td>Poids</td><td>Moyen : + longues + lourdes = plus de traction</td></tr>
+          <tr><td>Zones à surveiller</td><td>Lisière, tempes, nuque</td></tr>
+          <tr><td>Repos obligatoire après dépose</td><td><b>2 à 4 semaines</b> sans tension</td></tr>
+          <tr><td>Budget indicatif</td><td>Salon : à évaluer ensemble · Soi-même : mèches + 2 h</td></tr>
+        </table>
+      </div>
+
+      <div class="encadre vert">
+        <h3>Ce que ça protège vraiment</h3>
+        <ul style="margin:0">
+          <li>Les pointes sont cachées : moins de frottement, moins de fourches.</li>
+          <li>On ne manipule plus ses cheveux tous les matins.</li>
+          <li>Le cheveu peut pousser 4 à 6 semaines sans être chauffé ni peigné.</li>
+        </ul>
+        <p class="mini" style="margin:2mm 0 0"><b>Mais :</b> une tresse ne protège plus dès qu'elle tire, qu'elle démange ou qu'elle dort avec vous trop longtemps.</p>
+      </div>
+
+      <div class="encadre terra">
+        <h3>Signaux d'alarme : je retire tout de suite</h3>
+        <ul style="margin:0">
+          <li>Douleur au point de ne pas pouvoir lever les sourcils tranquillement.</li>
+          <li>Petits boutons ou croûtes le long de la lisière dans les 3 premiers jours.</li>
+          <li>Une douleur qui m'empêche de dormir, ou une sensation de « peau tirée ».</li>
+          <li>Une zone clairsemée que je vois apparaître entre deux retouches.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="colleft">
+      <div class="encadre indigo">
+        <h3>Avant, pendant, après</h3>
+        <div class="phylo">
+          <div class="etape"><b>J-7</b>Masque hydratant + pré-poo à l'huile de coco. Cheveux en bon état avant de tirer dessus.</div>
+          <div class="etape"><b>Jour J</b>Cheveux propres, secs, démêlés. Je remets la fiche « consignes à ma coiffeuse ».</div>
+        </div>
+        <div class="phylo">
+          <div class="etape"><b>Pendant</b>Crâne hydraté 2×/semaine (eau + ¼ c. à café d'huile). Lavage du crâne au flacon applicateur, shampooing dilué 1 dose + 4 doses d'eau. Foulard la nuit, pas d'attache serrée.</div>
+          <div class="etape"><b>Dépose</b>Sans arracher, au ciseau si nécessaire, section par section, avec du gel de gombo pour démêler.</div>
+        </div>
+        <div class="phylo">
+          <div class="etape"><b>72 h après</b>Soin protéiné (si besoin), puis masque hydratant. Pas de brosse sèche. Pas de nouvelle tension.</div>
+          <div class="etape"><b>Repos</b>2 à 4 semaines : vanilles lâches, afro, foulard. Le crâne doit redevenir souple au toucher.</div>
+        </div>
+      </div>
+
+      <div class="encadre">
+        <h3>Pour qui / pas pour qui</h3>
+        <p style="margin:0"><b>Adaptée :</b> cheveux naturels de tout type, lisière fragile, débutantes, adolescente qui va à l'école.<br>
+        <b>À éviter :</b> crâne irrité ou qui saigne, cheveux défrisés qui cassent, cheveux très fins avec rajouts longs, enfant de moins de 6 ans avec rajouts lourds.</p>
+      </div>
+
+      <div class="encadre or">
+        <h3>Ce que ça coûte, ce que ça rapporte</h3>
+        <p style="margin:0">Comparez sur 4 mois : <b>5 déposes/poses</b> (coût salon) contre <b>1 pose + 2 repos de 3 semaines</b>. Le calendrier de la page 137 vous donne le modèle à remplir avec vos propres prix de marché.</p>
+      </div>
+
+      <div class="retiens"><b>À retenir :</b> ce n'est pas la tresse le problème, c'est <b>la tension et la durée</b>. Une knotless serrée 10 semaines abîme plus qu'une vanille lâche.</div>
+    </div>
+  </div>
+  <div class="pagenum" style="position:absolute;bottom:5mm;right:13mm">124</div>
+</section>
+
+</body>
+</html>
